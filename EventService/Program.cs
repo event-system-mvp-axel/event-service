@@ -120,7 +120,7 @@ using (var scope = app.Services.CreateScope())
                 Category = "Musik",
                 MaxTickets = 500,
                 Price = 299,
-                ImageUrl = "https://via.placeholder.com/400x300",
+                ImageUrl = "/images/sommarkonsert.png",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
@@ -135,7 +135,7 @@ using (var scope = app.Services.CreateScope())
                 Category = "Mat & Dryck",
                 MaxTickets = 1000,
                 Price = 150,
-                ImageUrl = "https://via.placeholder.com/400x300",
+                ImageUrl = "/images/matdagar.png",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
@@ -150,7 +150,7 @@ using (var scope = app.Services.CreateScope())
                 Category = "Komedi",
                 MaxTickets = 200,
                 Price = 350,
-                ImageUrl = "https://via.placeholder.com/400x300",
+                ImageUrl = "/images/standup.png",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }
