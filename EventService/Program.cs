@@ -115,8 +115,8 @@ using (var scope = app.Services.CreateScope())
                 Title = "Sommarkonsert i Parken",
                 Description = "En fantastisk utomhuskonsert med lokala artister",
                 Location = "Stadsparken, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(30),
-                EndDate = DateTime.UtcNow.AddDays(30).AddHours(4),
+                StartDate = DateTime.UtcNow.AddDays(22).Date.AddHours(14),
+                EndDate = DateTime.UtcNow.AddDays(22).Date.AddHours(22),
                 Category = "Musik",
                 MaxTickets = 500,
                 Price = 299,
@@ -127,11 +127,11 @@ using (var scope = app.Services.CreateScope())
             new EventService.Models.Event
             {
                 Id = Guid.NewGuid(),
-                Title = "Matfestival 2024",
+                Title = "Matfestival 2025",
                 Description = "Smaka på delikatesser från hela världen",
                 Location = "Kungsträdgården, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(45),
-                EndDate = DateTime.UtcNow.AddDays(47),
+                StartDate = DateTime.UtcNow.AddDays(30).Date.AddHours(11),
+                EndDate = DateTime.UtcNow.AddDays(30).Date.AddHours(20),
                 Category = "Mat & Dryck",
                 MaxTickets = 1000,
                 Price = 150,
@@ -145,8 +145,8 @@ using (var scope = app.Services.CreateScope())
                 Title = "Stand-up Comedy Night",
                 Description = "En kväll fylld med skratt och underhållning",
                 Location = "Norra Brunn, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(14),
-                EndDate = DateTime.UtcNow.AddDays(14).AddHours(3),
+                StartDate = DateTime.UtcNow.AddDays(14).Date.AddHours(20).AddMinutes(30), 
+                EndDate = DateTime.UtcNow.AddDays(14).Date.AddHours(23).AddMinutes(30),   
                 Category = "Komedi",
                 MaxTickets = 200,
                 Price = 350,
@@ -154,6 +154,8 @@ using (var scope = app.Services.CreateScope())
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }
+
+            
         };
 
         context.Events.AddRange(events);
