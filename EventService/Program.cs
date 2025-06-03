@@ -162,5 +162,8 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 }
+app.MapGet("/health", () => "Service is running!");
+app.MapGet("/", () => "Service is healthy");
+
 
 app.Run();
