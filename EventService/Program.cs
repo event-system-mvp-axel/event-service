@@ -83,6 +83,10 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Azure App Service port binding
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
