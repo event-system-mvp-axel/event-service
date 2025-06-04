@@ -22,6 +22,13 @@ namespace EventService.Controllers
             _context = context;
         }
 
+        // GET: api/events/test
+        [HttpGet("test")]
+        public ActionResult<string> Test()
+        {
+            return Ok("Events API is working!");
+        }
+
         // GET: api/events
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEvents()
