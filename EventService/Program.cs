@@ -108,63 +108,86 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        // Förstör och återskapa databasen för att säkerställa att den är uppdaterad
-        context.Database.EnsureDeleted();
+        // Säkerställ att databasen finns
         context.Database.EnsureCreated();
 
-        // Lägg till events direkt
-        var events = new[]
-        {
-            new EventService.Models.Event
-            {
-                Id = Guid.NewGuid(),
-                Title = "Sommarkonsert i Parken",
-                Description = "En fantastisk utomhuskonsert med lokala artister",
-                Location = "Stadsparken, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(22).Date.AddHours(14),
-                EndDate = DateTime.UtcNow.AddDays(22).Date.AddHours(22),
-                Category = "Musik",
-                MaxTickets = 500,
-                Price = 299,
-                ImageUrl = "/images/sommarkonsert.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new EventService.Models.Event
-            {
-                Id = Guid.NewGuid(),
-                Title = "Matfestival 2025",
-                Description = "Smaka på delikatesser från hela världen",
-                Location = "Kungsträdgården, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(30).Date.AddHours(11),
-                EndDate = DateTime.UtcNow.AddDays(30).Date.AddHours(20),
-                Category = "Mat & Dryck",
-                MaxTickets = 1000,
-                Price = 150,
-                ImageUrl = "/images/matdagar.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new EventService.Models.Event
-            {
-                Id = Guid.NewGuid(),
-                Title = "Stand-up Comedy Night",
-                Description = "En kväll fylld med skratt och underhållning",
-                Location = "Norra Brunn, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(14).Date.AddHours(20).AddMinutes(30),
-                EndDate = DateTime.UtcNow.AddDays(14).Date.AddHours(23).AddMinutes(30),
-                Category = "Komedi",
-                MaxTickets = 200,
-                Price = 350,
-                ImageUrl = "/images/standup.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }
-        };
+        // Skapa Events tabellen manuellt om den inte finns
+        context.Database.ExecuteSqlRaw(@"
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Events' AND xtype='U')
+            CREATE TABLE Events (
+                Id uniqueidentifier PRIMARY KEY,
+                Title nvarchar(200) NOT NULL,
+                Description nvarchar(max) NOT NULL,
+                Location nvarchar(300) NOT NULL,
+                StartDate datetime2 NOT NULL,
+                EndDate datetime2 NOT NULL,
+                Category nvarchar(50) NOT NULL,
+                MaxTickets int NOT NULL,
+                Price decimal(18,2) NOT NULL,
+                ImageUrl nvarchar(max),
+                CreatedAt datetime2 NOT NULL,
+                UpdatedAt datetime2 NOT NULL
+            )");
 
-        context.Events.AddRange(events);
-        context.SaveChanges();
-        Console.WriteLine("Database seeded successfully!");
+        // Kontrollera om tabellen är tom
+        var count = context.Events.Count();
+
+        if (count == 0)
+        {
+            // Lägg till events
+            var events = new[]
+            {
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Sommarkonsert i Parken",
+                    Description = "En fantastisk utomhuskonsert med lokala artister",
+                    Location = "Stadsparken, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(22).Date.AddHours(14),
+                    EndDate = DateTime.UtcNow.AddDays(22).Date.AddHours(22),
+                    Category = "Musik",
+                    MaxTickets = 500,
+                    Price = 299,
+                    ImageUrl = "/images/sommarkonsert.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Matfestival 2025",
+                    Description = "Smaka på delikatesser från hela världen",
+                    Location = "Kungsträdgården, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(30).Date.AddHours(11),
+                    EndDate = DateTime.UtcNow.AddDays(30).Date.AddHours(20),
+                    Category = "Mat & Dryck",
+                    MaxTickets = 1000,
+                    Price = 150,
+                    ImageUrl = "/images/matdagar.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Stand-up Comedy Night",
+                    Description = "En kväll fylld med skratt och underhållning",
+                    Location = "Norra Brunn, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(14).Date.AddHours(20).AddMinutes(30),
+                    EndDate = DateTime.UtcNow.AddDays(14).Date.AddHours(23).AddMinutes(30),
+                    Category = "Komedi",
+                    MaxTickets = 200,
+                    Price = 350,
+                    ImageUrl = "/images/standup.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            };
+
+            context.Events.AddRange(events);
+            context.SaveChanges();
+            Console.WriteLine("Database seeded successfully!");
+        }
     }
     catch (Exception ex)
     {
