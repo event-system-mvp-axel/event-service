@@ -33,23 +33,33 @@ namespace EventService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEvents()
         {
-            var events = await _context.Events
-                .Select(e => new EventDto
-                {
-                    Id = e.Id,
-                    Title = e.Title,
-                    Description = e.Description,
-                    Location = e.Location,
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate,
-                    Category = e.Category,
-                    MaxTickets = e.MaxTickets,
-                    Price = e.Price,
-                    ImageUrl = e.ImageUrl
-                })
-                .ToListAsync();
+            try
+            {
+                // Testa först om tabellen finns
+                var count = await _context.Events.CountAsync();
 
-            return Ok(events);
+                var events = await _context.Events
+                    .Select(e => new EventDto
+                    {
+                        Id = e.Id,
+                        Title = e.Title,
+                        Description = e.Description,
+                        Location = e.Location,
+                        StartDate = e.StartDate,
+                        EndDate = e.EndDate,
+                        Category = e.Category,
+                        MaxTickets = e.MaxTickets,
+                        Price = e.Price,
+                        ImageUrl = e.ImageUrl
+                    })
+                    .ToListAsync();
+
+                return Ok(events);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
         }
 
         // GET: api/events/{id}
