@@ -108,62 +108,68 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<EventContext>();
     context.Database.EnsureCreated();
 
-    // Seed data om databasen är tom
-    if (!context.Events.Any())
+    // Säker kontroll för seeding
+    try
     {
-        var events = new[]
+        if (!context.Events.Any())
         {
-            new EventService.Models.Event
+            var events = new[]
             {
-                Id = Guid.NewGuid(),
-                Title = "Sommarkonsert i Parken",
-                Description = "En fantastisk utomhuskonsert med lokala artister",
-                Location = "Stadsparken, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(22).Date.AddHours(14),
-                EndDate = DateTime.UtcNow.AddDays(22).Date.AddHours(22),
-                Category = "Musik",
-                MaxTickets = 500,
-                Price = 299,
-                ImageUrl = "/images/sommarkonsert.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new EventService.Models.Event
-            {
-                Id = Guid.NewGuid(),
-                Title = "Matfestival 2025",
-                Description = "Smaka på delikatesser från hela världen",
-                Location = "Kungsträdgården, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(30).Date.AddHours(11),
-                EndDate = DateTime.UtcNow.AddDays(30).Date.AddHours(20),
-                Category = "Mat & Dryck",
-                MaxTickets = 1000,
-                Price = 150,
-                ImageUrl = "/images/matdagar.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new EventService.Models.Event
-            {
-                Id = Guid.NewGuid(),
-                Title = "Stand-up Comedy Night",
-                Description = "En kväll fylld med skratt och underhållning",
-                Location = "Norra Brunn, Stockholm",
-                StartDate = DateTime.UtcNow.AddDays(14).Date.AddHours(20).AddMinutes(30), 
-                EndDate = DateTime.UtcNow.AddDays(14).Date.AddHours(23).AddMinutes(30),   
-                Category = "Komedi",
-                MaxTickets = 200,
-                Price = 350,
-                ImageUrl = "/images/standup.png",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Sommarkonsert i Parken",
+                    Description = "En fantastisk utomhuskonsert med lokala artister",
+                    Location = "Stadsparken, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(22).Date.AddHours(14),
+                    EndDate = DateTime.UtcNow.AddDays(22).Date.AddHours(22),
+                    Category = "Musik",
+                    MaxTickets = 500,
+                    Price = 299,
+                    ImageUrl = "/images/sommarkonsert.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Matfestival 2025",
+                    Description = "Smaka på delikatesser från hela världen",
+                    Location = "Kungsträdgården, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(30).Date.AddHours(11),
+                    EndDate = DateTime.UtcNow.AddDays(30).Date.AddHours(20),
+                    Category = "Mat & Dryck",
+                    MaxTickets = 1000,
+                    Price = 150,
+                    ImageUrl = "/images/matdagar.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new EventService.Models.Event
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Stand-up Comedy Night",
+                    Description = "En kväll fylld med skratt och underhållning",
+                    Location = "Norra Brunn, Stockholm",
+                    StartDate = DateTime.UtcNow.AddDays(14).Date.AddHours(20).AddMinutes(30),
+                    EndDate = DateTime.UtcNow.AddDays(14).Date.AddHours(23).AddMinutes(30),
+                    Category = "Komedi",
+                    MaxTickets = 200,
+                    Price = 350,
+                    ImageUrl = "/images/standup.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            };
 
-            
-        };
-
-        context.Events.AddRange(events);
-        context.SaveChanges();
+            context.Events.AddRange(events);
+            context.SaveChanges();
+        }
+    }
+    catch (Exception ex)
+    {
+        // Log error men låt appen fortsätta
+        Console.WriteLine($"Seeding error: {ex.Message}");
     }
 }
 app.MapGet("/health", () => "Service is running!");
