@@ -106,11 +106,15 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<EventContext>();
-    context.Database.EnsureCreated();
 
-    // Säker kontroll för seeding
     try
     {
+        context.Database.EnsureCreated();
+
+        // Vänta lite för att säkerställa att tabellen skapats
+        System.Threading.Thread.Sleep(100);
+
+        // Kontrollera om Events tabellen är tom
         if (!context.Events.Any())
         {
             var events = new[]
@@ -170,6 +174,7 @@ using (var scope = app.Services.CreateScope())
     {
         // Log error men låt appen fortsätta
         Console.WriteLine($"Seeding error: {ex.Message}");
+        // Appen fortsätter att starta även om seeding misslyckas
     }
 }
 app.MapGet("/health", () => "Service is running!");
